@@ -25,7 +25,7 @@ help:
 
 install-depends:
 	# install all dependencies
-	sudo apt-get install bsdtar syslinux syslinux-utils cpio genisoimage coreutils qemu-system qemu-system-x86 util-linux
+	sudo apt-get install bsdtar syslinux syslinux-utils isolinux cpio xorriso coreutils qemu-system qemu-system-x86 util-linux 
 
 image: clean unpack isolinux preseed md5 iso
 
@@ -54,9 +54,18 @@ md5:
 
 iso:
 	# create iso
-	genisoimage -V ${LABEL} \
-		-r -J -b isolinux/isolinux.bin -c isolinux/boot.cat \
-		-no-emul-boot -boot-load-size 4 -boot-info-table \
+	xorriso -as mkisofs \
+		-r -V '${LABEL}' \
+		-isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
+		-c isolinux/boot.cat \
+		-b isolinux/isolinux.bin \
+		-no-emul-boot \
+		-boot-load-size 4 \
+		-boot-info-table \
+		-eltorito-alt-boot \
+		-e boot/grub/efi.img \
+		-no-emul-boot \
+		-isohybrid-gpt-basdat \
 		-o ${TARGET} ${TMP}
 	# fix MBR for USB boot
 	isohybrid ${TARGET}
