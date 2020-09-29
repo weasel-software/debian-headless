@@ -52,11 +52,15 @@ md5:
 	# recreate the MD5 sums of all files
 	find ${TMP}/ -type f -exec md5sum {} \; > ${TMP}/md5sum.txt
 
+mbr:
+	# Create MBR template from original image
+	dd if=${SOURCE} bs=512 count=1 of=tmp_isohdpfx.bin
+
 iso:
 	# create iso
 	xorriso -as mkisofs \
 		-r -V '${LABEL}' \
-		-isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
+		-isohybrid-mbr tmp_isohdpfx.bin \
 		-c isolinux/boot.cat \
 		-b isolinux/isolinux.bin \
 		-no-emul-boot \
@@ -67,8 +71,8 @@ iso:
 		-no-emul-boot \
 		-isohybrid-gpt-basdat \
 		-o ${TARGET} ${TMP}
-	# fix MBR for USB boot
-	isohybrid ${TARGET}
+	# Remove MBR template
+	rm tmp_isohdpfx.bin
 
 qemu: ${TARGET}
 	@echo
