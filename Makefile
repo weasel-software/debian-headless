@@ -27,7 +27,7 @@ install-depends:
 	# install all dependencies
 	sudo apt-get install bsdtar syslinux syslinux-utils isolinux cpio xorriso coreutils qemu-system qemu-system-x86 util-linux 
 
-image: clean unpack isolinux preseed md5 iso
+image: clean unpack isolinux preseed md5 mbr iso
 
 unpack:
 	mkdir ${TMP}
