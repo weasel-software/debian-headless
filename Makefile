@@ -32,7 +32,7 @@ image: clean unpack isolinux preseed md5 mbr iso
 unpack:
 	mkdir ${TMP}
 	# Unpack the image to the folder
-	bsdtar -C ${TMP} -xf ${SOURCE}
+	xorriso -osirrox on -indev ${SOURCE} -extract / ${TMP}
 	# Set write permissions
 	chmod -R +w ${TMP}
 
